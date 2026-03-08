@@ -1,73 +1,87 @@
-# Welcome to your Lovable project
+# ZK Income Oracle — Setup Guide
 
-## Project info
+## Prerequisites
+- Node.js >= 20
+- Rust (optional, for Noir/BB if building from source)
+- Argent X or Braavos wallet with Sepolia STRK
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Step-by-Step Setup
 
-## How can I edit this code?
+### 1. Install tools
+```bash
+# Noir
+noirup --version 1.0.0-beta.3
 
-There are several ways of editing your application.
+# Barretenberg
+bbup --version 0.85.0
 
-**Use Lovable**
+# Scarb  
+# (Self-install: https://docs.swmansion.com/scarb/download.html)
+# or: curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v 2.9.2
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Starknet Foundry
+# curl -L https://raw.githubusercontent.com/foundry-rs/starknet-foundry/master/scripts/install.sh | sh
 ```
 
-**Edit a file directly in GitHub**
+### 2. Compile circuit
+```bash
+chmod +x scripts/compile_circuit.sh
+./scripts/compile_circuit.sh
+# Generates target/income_oracle.json and target/vk.bin
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 3. Build Cairo contracts
+```bash
+cd contracts
+scarb build
+# Generates target/dev/income_oracle_IncomeOracle.contract_class.json
+```
 
-**Use GitHub Codespaces**
+### 4. Deploy Cairo contracts
+```bash
+# Set up a sncast account first
+sncast account create --name discovery_deployer --type openzeppelin
+# Fund it with STRK on Sepolia!
+# sncast account deploy --name discovery_deployer --fee-token strk
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
+```
 
-## What technologies are used for this project?
+### 5. Update environment files
+```bash
+# backend/.env
+# ORACLE_CONTRACT_ADDRESS=0x...
 
-This project is built with:
+# frontend/.env
+# VITE_ORACLE_ADDRESS=0x...
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### 6. Start backend
+```bash
+cd backend
+npm install
+npm run dev
+# → Running on http://localhost:3001
+```
 
-## How can I deploy this project?
+### 7. Start frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# → Running on http://localhost:5173
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### 8. Test everything
+```bash
+chmod +x scripts/test_flow.sh
+./scripts/test_flow.sh
+```
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Full Demo Flow
+1. Open http://localhost:5173
+2. Connect Argent X or Braavos wallet (Sepolia)
+3. Click "Generate Income Proof"
+4. Watch: scan → prove (client-side ~2s) → submit to Sepolia
+5. See TX on Starkscan
