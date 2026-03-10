@@ -179,18 +179,38 @@ const Dashboard = () => {
           </div>
 
           <nav className="flex-1 px-2 space-y-1">
-            {sidebarItems.map((item, i) => (
-              <button
-                key={i}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] font-mono text-sm transition-colors duration-150 ${item.active
-                  ? "text-zk-green border-l-2 border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]"
-                  : "text-zk-text-secondary hover:text-zk-text-primary hover:bg-[rgba(255,255,255,0.03)]"
-                  }`}
-              >
-                <item.icon size={16} />
-                {item.label}
-              </button>
-            ))}
+            {sidebarItems.map((item, i) => {
+              const handleClick = () => {
+                if (item.label === "View on Starkscan") {
+                  window.open(`${CONFIG.STARKSCAN_BASE}/contract/${CONFIG.ORACLE_ADDRESS}`, "_blank");
+                } else if (item.label === "Integration Guide") {
+                  setShowSnippet(true);
+                  // Scroll right sidebar into view if needed
+                } else if (item.label === "My Commitments") {
+                  if (address) {
+                    window.open(`${CONFIG.STARKSCAN_BASE}/contract/${CONFIG.ORACLE_ADDRESS}#events`, "_blank");
+                  } else {
+                    toast.error("Connect wallet to view commitments");
+                  }
+                } else if (item.label === "Generate Proof") {
+                  if (currentStep !== 0) setCurrentStep(0);
+                }
+              };
+
+              return (
+                <button
+                  key={i}
+                  onClick={handleClick}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] font-mono text-sm transition-colors duration-150 ${item.active
+                    ? "text-zk-green border-l-2 border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]"
+                    : "text-zk-text-secondary hover:text-zk-text-primary hover:bg-[rgba(255,255,255,0.03)]"
+                    }`}
+                >
+                  <item.icon size={16} />
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
 
           <div className="p-4 border-t border-zk-border">
