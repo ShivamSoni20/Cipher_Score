@@ -18,6 +18,7 @@ const ABI = [
       { name: "commitment", type: "core::felt252" },
       { name: "nullifier", type: "core::felt252" },
       { name: "proof_valid", type: "core::bool" },
+      { name: "qualifies", type: "core::bool" },
     ],
     outputs: [],
     state_mutability: "external",
@@ -51,7 +52,7 @@ const Dashboard = () => {
       {
         contractAddress: CONFIG.ORACLE_ADDRESS,
         entrypoint: "register_commitment",
-        calldata: [MOCK_COMMITMENT, MOCK_NULLIFIER, true],
+        calldata: [MOCK_COMMITMENT, MOCK_NULLIFIER, true, true],
       },
     ],
   });

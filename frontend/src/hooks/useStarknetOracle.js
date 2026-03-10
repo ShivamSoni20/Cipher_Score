@@ -9,7 +9,8 @@ const ORACLE_ABI = [
         inputs: [
             { name: 'commitment', type: 'core::felt252' },
             { name: 'nullifier', type: 'core::felt252' },
-            { name: 'proof_valid', type: 'core::bool' }
+            { name: 'proof_valid', type: 'core::bool' },
+            { name: 'qualifies', type: 'core::bool' }
         ],
         outputs: [],
         state_mutability: 'external'
@@ -40,13 +41,14 @@ export function useStarknetOracle() {
 
     const { sendAsync, isPending, data: txData } = useSendTransaction({});
 
-    const registerCommitment = async (commitment, nullifier) => {
+    const registerCommitment = async (commitment, nullifier, qualifies = true) => {
         if (!contract) throw new Error('Oracle contract not initialized');
 
         const call = contract.populate('register_commitment', [
             commitment,  // felt252
             nullifier,   // felt252
-            true         // proof_valid: bool
+            true,        // proof_valid: bool
+            qualifies    // qualifies: bool
         ]);
 
         const result = await sendAsync([call]);
