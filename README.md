@@ -1,76 +1,134 @@
-# 🌊 CIPHER SCORE
-### Starknet Network • ZK-Proof Infrastructure • Income Oracle
+<div align="center">
+  <h1>🌊 CIPHER SCORE</h1>
+  <h3>The Infinite Trust Layer: Where Credit Worthiness is Proven Without Revealing Privacy</h3>
+  <p>
+    <b>Starknet Network • ZK-Proof Infrastructure • Income Oracle</b>
+  </p>
+  
+  [![Starknet](https://img.shields.io/badge/Starknet-Network-blue?style=for-the-badge&logo=starknet)](https://starknet.io/)
+  [![Noir](https://img.shields.io/badge/ZK_Proofs-Noir-black?style=for-the-badge)](https://noir-lang.org/)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+  
+  [Live Dashboard](#) • [Starknet Explorer](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4) • [Demo Video](#)
+</div>
 
-**The Infinite Trust Layer: Where Credit Worthiness is Proven Without Revealing Privacy**
+<br/>
 
-🤖 **Our Core Infrastructure:**
+**CIPHER SCORE** is a revolutionary platform where users can verify their financial status autonomously using Zero-Knowledge proofs—all secured by Starknet smart contracts. The system is designed for 100% Privacy, allowing lending protocols to assess risk without ever revealing raw bank data to centralized entities.
 
-*   **Income Proof Generator** 🐍 - Noir-powered ZK logic
-*   **On-Chain Verifier** 🎬 - Cairo-based Starknet contract
-*   **Privacy Guard** ⚡ - Identity-preserving commitments
+Built for the **Starknet Re{define} Hackathon (Privacy Track)**.
 
-📢 **Follow our progress:** [Live Dashboard](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4)
+---
 
-**CIPHER SCORE** is a revolutionary platform where users can verify their financial status autonomously using Zero-Knowledge proofs—all secured by Starknet smart contracts. The system is designed for 100% Privacy, allowing lending protocols to assess risk without ever seeing raw bank data.
+## 🎯 The Problem
+In the current DeFi and traditional finance landscapes, credit scoring requires users to leak highly sensitive financial data (addresses, full transaction histories, account balances) to centralized or prying entities. This creates massive privacy risks, honey-pots for hackers, and limits the ultimate scale of trustless lending.
 
-🎯 **The Problem**
-In the current DeFi landscape, credit scoring requires users to leak sensitive financial data (address, full history) to centralized or prying entities. This creates massive privacy risks and limits the scale of trustless lending.
+## 💡 The Solution
+**CIPHER SCORE** creates a decentralized privacy layer for credit:
+- **Autonomous Agency:** Users generate proofs client-side (or through secure enclaves) using Noir before committing on-chain.
+- **Zero-Knowledge Architecture:** Prove your income exceeds a threshold or meets a criteria *without* exposing the actual number.
+- **Atomic Escrow & Verification:** Eligibility is verified directly on the Starknet Blockchain before any interaction with lending pools.
 
-💡 **The Solution**
-CIPHER SCORE creates a decentralized privacy layer for credit.
+---
 
-*   **Autonomous Agency:** Users generate proofs client-side using Noir before committing on-chain.
-*   **Atomic Escrow:** Eligibility is verified on the Starknet Blockchain before any interaction.
-*   **Immutable Proof:** Task outputs and commitments are stored on Starknet, providing a permanent, decentralized record.
-*   **Zero-Knowledge Swarm:** An autonomous verifier ensures all incoming proofs are valid 24/7.
+## 🏗️ System Architecture
 
-🎬 **Watch Demo**
-[CIPHER SCORE Demo Video](#)
+Our infrastructure leverages off-chain Noir circuits for high-performance proof generation, coupled with on-chain Cairo verifiers for uncompromising security on Starknet.
 
-**Pro Tip:** Run `npm run dev` in the backend and frontend to launch the ecosystem!
-
-🏗️ **Architecture**
-
-See [architecture.md](#) for full technical details.
-
-🚀 **Quick Start**
-1. **Installation**
-```bash
-git clone https://github.com/ShivamSoni20/zk-credit-bridge.git
-cd zk-credit-bridge
-npm install
+```mermaid
+flowchart TD
+    User([👤 User / Borrower]) -->|1. Enters Income Data| Frontend[🖥️ Premium UI Dashboard]
+    
+    subgraph Off-Chain Environment
+        Frontend -->|2. Request Proof Generation| Backend[⚙️ Relayer / ZK Service]
+        Backend -->|3. Compile & Execute| Noir[⚫ Noir ZK Circuit]
+        Noir -->|4. Generate Proof & Public Inputs| Backend
+        Backend -->|5. Return ZK Payload| Frontend
+    end
+    
+    subgraph Starknet Network (On-Chain)
+        Frontend -->|6. Initiate On-Chain TX| Contract[📜 Income Oracle Smart Contract]
+        Contract -->|7. Verify ZK Proof| CairoVerifier[🛡️ Cairo SNARK Verifier]
+        CairoVerifier -.->|8. Verification Result| Contract
+    end
+    
+    Contract -->|9. Emit Success Event| Frontend
+    Frontend -->|10. Grant Credit/Access| User
+    
+    %% Styling
+    style User fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    style Frontend fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4
+    style Backend fill:#1e1e2e,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4
+    style Noir fill:#11111b,stroke:#f38ba8,stroke-width:2px,color:#cdd6f4
+    style Contract fill:#313244,stroke:#f9e2af,stroke-width:2px,color:#cdd6f4
+    style CairoVerifier fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
 ```
-2. **Configuration**
-Create a `.env` in the `backend` and `frontend` (see `.env.example`).
 
-3. **Launch the Ecosystem**
-# Terminal 1: Backend Server (The "Brain")
-cd backend && npm run dev
+---
 
-# Terminal 2: Premium Frontend Dashboard (CIPHER SCORE UI)
-cd frontend && npm run dev
+## 🤖 Core Infrastructure
 
-🏆 **Innovation & Why We Win**
-*   **Bidding Reasoning:** (Adapted: Proof Integrity) Users post their commitments to Starknet, proving their reasoning was secure and logical without leaking data.
-*   **Zero Human Requirement:** Once a proof is posted, the verification and protocol interaction happen entirely between code.
-*   **Starknet Integration:** Using Starknet's fast finality for atomic verification and real-time state updates.
-*   **Premium UX:** Cinema-inspired dashboard with live metrics tracking Human Action: 0.
+*   **Income Proof Generator 🐍** - Noir-powered logic that mathematically guarantees the integrity of off-chain private data.
+*   **On-Chain Verifier 🛡️** - Cairo-based Starknet contract that atomically verifies the mathematical proofs generated by Noir.
+*   **Privacy Guard ⚡** - Identity-preserving commitments that bridge Web2 banking data to Web3 DeFi.
 
-🛣️ **Roadmap**
-*   **Mainnet Launch:** Migration from Starknet Sepolia to Mainnet.
-*   **Multi-Protocol Verifications:** Allowing different DeFi protocols to query the same oracle.
-*   **Advanced ZK Models:** Privacy-preserving credit scoring based on multiple data sources.
+---
 
-# CIPHER SCORE (ZK Income Oracle)
-> **"Prove income. Get approved. Nothing revealed."**
+## 🚀 Quick Start
 
-CIPHER SCORE is a privacy-preserving creditworthiness infrastructure built for the **Starknet Re{define} Hackathon 2026 (Privacy Track)**.
-🔗 **Live Links**
-*   **Frontend URL:** [Live Dashboard](#)
-*   **GitHub:** [ShivamSoni20/zk-credit-bridge](https://github.com/ShivamSoni20/zk-credit-bridge)
-*   **Starknet Explorer:** [Contract Package](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4)
+### 1. Installation
+Clone the repository and install the necessary dependencies:
+```bash
+git clone https://github.com/ShivamSoni20/Cipher_Score.git
+cd Cipher_Score
+```
 
-📄 **License**
-MIT License - see LICENSE for details.
+### 2. Configuration
+Create a `.env` in the `backend` and `frontend` directories based on the `.env.example` templates.
+Ensure you have your Starknet RPC and necessary keys configured.
+
+### 3. Launch the Ecosystem
+You will need to run both the backend prover service and the frontend dashboard.
+
+**Terminal 1: Backend Prover / Relayer Service**
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+**Terminal 2: Premium Frontend Dashboard**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🏆 Innovation & Why We Win
+
+1. **True Privacy First:** No plain-text data ever leaves the user's localized session until securely hashed and mathematically proven via Noir.
+2. **Zero Human Requirement:** Once a proof is generated, the verification and protocol interaction execute entirely autonomously on-chain.
+3. **Starknet Integration:** Capitalizes on Starknet’s fast finality, low fees, and Cairo computing power for seamless UX and mathematically guaranteed state updates.
+4. **Premium UX:** A cinema-inspired dashboard with live metrics tracking and interactive micro-animations provides a Web2-like experience with Web3 guarantees.
+
+---
+
+## 🛣️ Roadmap
+
+- [x] **Proof of Concept:** Basic ZK proofs over dummy credit scores.
+- [x] **Starknet Sepolia Deployment:** On-chain Cairo verifier setup.
+- [ ] **Multi-Protocol Standardization:** Allowing Aave, zkLend, and others to blindly query the oracle.
+- [ ] **Advanced ZK Models:** Machine learning models embedded within constrained ZK circuits for robust risk assessment.
+- [ ] **Mainnet Launch:** Complete migration to Starknet Mainnet with full audits.
+
+---
+
+## 📄 License & Team
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Built with ❤️ for the future of decentralized work by **Shivam Soni**.
+
+> **"Prove your worth. Get approved. Reveal nothing."**
