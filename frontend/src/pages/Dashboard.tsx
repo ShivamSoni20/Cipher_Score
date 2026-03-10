@@ -109,11 +109,10 @@ const Dashboard = () => {
             {sidebarItems.map((item, i) => (
               <button
                 key={i}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] font-mono text-sm transition-colors duration-150 ${
-                  item.active
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] font-mono text-sm transition-colors duration-150 ${item.active
                     ? "text-zk-green border-l-2 border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]"
                     : "text-zk-text-secondary hover:text-zk-text-primary hover:bg-[rgba(255,255,255,0.03)]"
-                }`}
+                  }`}
               >
                 <item.icon size={16} />
                 {item.label}
@@ -138,7 +137,7 @@ const Dashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
               <div>
-                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate Income Proof</h1>
+                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate CIPHER SCORE</h1>
                 <p className="font-body text-sm text-zk-text-secondary mt-1">Prove your creditworthiness without revealing any data</p>
               </div>
               <span className="font-mono text-xs text-zk-text-secondary flex items-center gap-1.5 mt-2 md:mt-0">
@@ -152,18 +151,16 @@ const Dashboard = () => {
               {stepLabels.map((label, i) => (
                 <div key={i} className="flex items-center">
                   <div className="flex flex-col items-center min-w-[80px]">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold border-2 transition-all duration-500 ${
-                      i < currentStep
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold border-2 transition-all duration-500 ${i < currentStep
                         ? "bg-zk-green border-zk-green text-zk-base"
                         : i === currentStep
-                        ? "border-zk-green text-zk-green animate-pulse"
-                        : "border-zk-border text-zk-text-secondary"
-                    }`}>
+                          ? "border-zk-green text-zk-green animate-pulse"
+                          : "border-zk-border text-zk-text-secondary"
+                      }`}>
                       {i < currentStep ? "✓" : i + 1}
                     </div>
-                    <span className={`font-mono text-[10px] mt-1 whitespace-nowrap ${
-                      i <= currentStep ? "text-zk-green" : "text-zk-text-secondary"
-                    }`}>
+                    <span className={`font-mono text-[10px] mt-1 whitespace-nowrap ${i <= currentStep ? "text-zk-green" : "text-zk-text-secondary"
+                      }`}>
                       {label}
                     </span>
                   </div>
@@ -182,9 +179,8 @@ const Dashboard = () => {
 
             <div className="grid lg:grid-cols-[1fr,280px] gap-6">
               {/* Main card */}
-              <div className={`bg-zk-card border rounded-[6px] p-6 transition-all duration-500 ${
-                currentStep === 3 ? "border-zk-green bg-[rgba(0,255,136,0.03)] animate-success-pulse" : "border-zk-border"
-              }`}>
+              <div className={`bg-zk-card border rounded-[6px] p-6 transition-all duration-500 ${currentStep === 3 ? "border-zk-green bg-[rgba(0,255,136,0.03)] animate-success-pulse" : "border-zk-border"
+                }`}>
                 {/* Step 1: Scanning */}
                 {currentStep === 1 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
@@ -207,9 +203,8 @@ const Dashboard = () => {
                           {mockTxRows.map((row, i) => (
                             <tr
                               key={i}
-                              className={`border-b border-zk-border transition-colors duration-300 ${
-                                scanProgress > (i + 1) * 12 ? "bg-[rgba(0,255,136,0.03)]" : ""
-                              }`}
+                              className={`border-b border-zk-border transition-colors duration-300 ${scanProgress > (i + 1) * 12 ? "bg-[rgba(0,255,136,0.03)]" : ""
+                                }`}
                             >
                               <td className="p-2 text-zk-text-secondary">{row.date}</td>
                               <td className="p-2 text-zk-text-primary">{row.type}</td>
@@ -359,7 +354,7 @@ const Dashboard = () => {
                         className="overflow-hidden"
                       >
                         <pre className="font-mono text-[10px] text-zk-text-primary p-4 pt-0 leading-relaxed">
-{`let oracle = IIncomeOracleDispatcher {
+                          {`let oracle = IIncomeOracleDispatcher {
     contract_address: ORACLE_ADDR
 };
 let approved = oracle.verify_income(

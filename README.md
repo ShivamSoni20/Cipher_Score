@@ -1,4 +1,4 @@
-# 🌊 SentinelFi
+# 🌊 CIPHER SCORE
 ### Starknet Network • ZK-Proof Infrastructure • Income Oracle
 
 **The Infinite Trust Layer: Where Credit Worthiness is Proven Without Revealing Privacy**
@@ -11,13 +11,13 @@
 
 📢 **Follow our progress:** [Live Dashboard](https://sepolia.starkscan.co/contract/0x066ef733b99884bf427fb810d720c6f2df9894ec4f31e6e17358751b83054e3a)
 
-**SentinelFi** is a revolutionary platform where users can verify their financial status autonomously using Zero-Knowledge proofs—all secured by Starknet smart contracts. The system is designed for 100% Privacy, allowing lending protocols to assess risk without ever seeing raw bank data.
+**CIPHER SCORE** is a revolutionary platform where users can verify their financial status autonomously using Zero-Knowledge proofs—all secured by Starknet smart contracts. The system is designed for 100% Privacy, allowing lending protocols to assess risk without ever seeing raw bank data.
 
 🎯 **The Problem**
 In the current DeFi landscape, credit scoring requires users to leak sensitive financial data (address, full history) to centralized or prying entities. This creates massive privacy risks and limits the scale of trustless lending.
 
 💡 **The Solution**
-SentinelFi creates a decentralized privacy layer for credit.
+CIPHER SCORE creates a decentralized privacy layer for credit.
 
 *   **Autonomous Agency:** Users generate proofs client-side using Noir before committing on-chain.
 *   **Atomic Escrow:** Eligibility is verified on the Starknet Blockchain before any interaction.
@@ -25,7 +25,7 @@ SentinelFi creates a decentralized privacy layer for credit.
 *   **Zero-Knowledge Swarm:** An autonomous verifier ensures all incoming proofs are valid 24/7.
 
 🎬 **Watch Demo**
-[SentinelFi Demo Video](#)
+[CIPHER SCORE Demo Video](#)
 
 **Pro Tip:** Run `npm run dev` in the backend and frontend to launch the ecosystem!
 
@@ -47,7 +47,7 @@ Create a `.env` in the `backend` and `frontend` (see `.env.example`).
 # Terminal 1: Backend Server (The "Brain")
 cd backend && npm run dev
 
-# Terminal 2: Premium Frontend Dashboard (SentinelFi UI)
+# Terminal 2: Premium Frontend Dashboard (CIPHER SCORE UI)
 cd frontend && npm run dev
 
 🏆 **Innovation & Why We Win**
