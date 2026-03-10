@@ -12,11 +12,11 @@ const Navbar = () => {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
 
-  const handleConnect = () => {
-    // For demo/simple use, we'll use the first available connector (Argent/Braavos)
-    if (connectors.length > 0) {
-      connect({ connector: connectors[0] });
-    }
+  const [showConnectorList, setShowConnectorList] = useState(false);
+
+  const handleConnect = (connector: any) => {
+    connect({ connector });
+    setShowConnectorList(false);
   };
 
   const truncate = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -53,13 +53,34 @@ const Navbar = () => {
             </button>
           </div>
         ) : (
-          <button
-            onClick={handleConnect}
-            className="font-mono text-sm text-zk-green border border-zk-green px-4 py-1.5 rounded-[4px] bg-transparent hover:bg-[rgba(0,255,136,0.08)] transition-all duration-200 animate-glow-pulse flex items-center gap-2"
-          >
-            <Wallet size={16} />
-            Connect Wallet
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowConnectorList(!showConnectorList)}
+              className="font-mono text-sm text-zk-green border border-zk-green px-4 py-1.5 rounded-[4px] bg-transparent hover:bg-[rgba(0,255,136,0.08)] transition-all duration-200 animate-glow-pulse flex items-center gap-2"
+            >
+              <Wallet size={16} />
+              Connect Wallet
+            </button>
+            {showConnectorList && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-zk-card border border-zk-border rounded-[4px] shadow-xl z-50 p-1">
+                {connectors.length > 0 ? (
+                  connectors.map((connector) => (
+                    <button
+                      key={connector.id}
+                      onClick={() => handleConnect(connector)}
+                      className="w-full text-left font-mono text-xs text-zk-text-secondary hover:text-zk-green hover:bg-[rgba(0,255,136,0.05)] px-3 py-2 rounded-[2px] transition-colors"
+                    >
+                      {connector.name}
+                    </button>
+                  ))
+                ) : (
+                  <div className="px-3 py-2 font-mono text-[10px] text-zk-amber">
+                    No wallet detected
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -89,13 +110,23 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <button
-              onClick={handleConnect}
-              className="font-mono text-sm text-zk-green border border-zk-green px-4 py-1.5 rounded-[4px] bg-transparent w-fit flex items-center gap-2"
-            >
-              <Wallet size={16} />
-              Connect Wallet
-            </button>
+            <div className="flex flex-col gap-2">
+              <p className="font-mono text-[10px] text-zk-text-secondary uppercase">Select Wallet:</p>
+              {connectors.length > 0 ? (
+                connectors.map((connector) => (
+                  <button
+                    key={connector.id}
+                    onClick={() => handleConnect(connector)}
+                    className="w-full text-left font-mono text-sm text-zk-green border border-zk-green px-4 py-2 rounded-[4px] bg-transparent flex items-center gap-2"
+                  >
+                    <Wallet size={16} />
+                    {connector.name}
+                  </button>
+                ))
+              ) : (
+                <p className="font-mono text-xs text-zk-amber">No Starknet wallet extension found.</p>
+              )}
+            </div>
           )}
         </div>
       )}

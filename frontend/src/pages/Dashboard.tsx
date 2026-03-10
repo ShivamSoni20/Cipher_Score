@@ -294,10 +294,17 @@ const Dashboard = () => {
                   </motion.div>
                 )}
 
-                {/* Step 0: Waiting */}
+                {/* Step 0: Waiting / Disconnected */}
                 {currentStep === 0 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-                    <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Connecting wallet...</p>
+                    {status === "connected" ? (
+                      <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Initializing CIPHER SCORE session...</p>
+                    ) : (
+                      <div className="space-y-4">
+                        <p className="font-mono text-sm text-zk-text-secondary">Please connect your Starknet wallet to continue</p>
+                        <p className="font-mono text-[10px] text-zk-amber">Ensure Argent X or Braavos is installed and set to Sepolia</p>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </div>
