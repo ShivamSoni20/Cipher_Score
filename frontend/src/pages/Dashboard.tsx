@@ -173,7 +173,7 @@ const Dashboard = () => {
         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:sticky top-14 left-0 z-30 w-60 h-[calc(100vh-56px)] bg-zk-surface border-r border-zk-border flex flex-col transition-transform duration-200`}>
           <div className="p-4">
             <Link to="/" className="font-mono text-sm text-zk-green flex items-center">
-              <span className="text-zk-text-secondary">&gt; </span>prova
+              <span className="text-zk-text-secondary">&gt; </span>cipher_score
               <span className="animate-blink text-zk-green ml-0.5">_</span>
             </Link>
           </div>
@@ -210,7 +210,7 @@ const Dashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
               <div>
-                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate PROVA Proof</h1>
+                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate CIPHER SCORE</h1>
                 <p className="font-body text-sm text-zk-text-secondary mt-1">Prove your creditworthiness without revealing any data</p>
               </div>
               <span className="font-mono text-xs text-zk-text-secondary flex items-center gap-1.5 mt-2 md:mt-0">
@@ -377,7 +377,7 @@ const Dashboard = () => {
                 {currentStep === 0 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
                     {status === "connected" ? (
-                      <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Initializing PROVA session...</p>
+                      <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Initializing CIPHER SCORE session...</p>
                     ) : (
                       <div className="space-y-4">
                         <p className="font-mono text-sm text-zk-text-secondary">Please connect your Starknet wallet to continue</p>

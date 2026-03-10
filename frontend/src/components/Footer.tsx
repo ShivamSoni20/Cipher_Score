@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <Link to="/" className="font-mono text-sm text-zk-green flex items-center">
           <span className="text-zk-text-secondary">&gt; </span>
-          prova
+          cipher_score
         </Link>
 
         <p className="font-mono text-xs text-zk-text-secondary text-center">
