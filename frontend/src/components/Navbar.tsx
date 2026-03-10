@@ -25,7 +25,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-zk-base border-b border-zk-border flex items-center px-4 md:px-6">
       <Link to="/" className="font-mono text-zk-green text-sm font-semibold flex items-center gap-0">
         <span className="text-zk-text-secondary">&gt; </span>
-        cipher_score
+        prova
         <span className="animate-blink text-zk-green ml-0.5">_</span>
       </Link>
 

@@ -15,7 +15,7 @@ const steps = [
     num: "02",
     icon: Shield,
     title: "ZK Proof Generated",
-    desc: "A Noir circuit generates a Groth16 proof in ~2 seconds. Client-side only. Your income amount is never revealed.",
+    desc: "A Noir circuit generates an UltraHonk proof in ~2 seconds. Client-side only. Your exact income amount is never revealed.",
     borderColor: "border-l-zk-blue",
     borderStyle: "border-l-[#1F6FEB]",
   },

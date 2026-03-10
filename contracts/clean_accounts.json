@@ -1,0 +1,14 @@
+{
+    "alpha-sepolia": {
+        "zk_deploy_v2": {
+            "address": "0x1d9ecc8606d69ec14d6b7a5fc5990e5f907db54052a11df8c3b186f614df328",
+            "class_hash": "0x5b4b537eaa2399e3aa99c4e2e0208ebd6c71bc1467938cd52c798c601e43564",
+            "deployed": false,
+            "legacy": false,
+            "private_key": "0x1e4601adbef17be05d88348965fbcf928229e1808ab084e189212eb7172d423",
+            "public_key": "0x75a5f7afda533742242919c44168cc768a1de51b391770440918dae4a42c251",
+            "salt": "0xe49ba347dfd4eaab",
+            "type": "open_zeppelin"
+        }
+    }
+}

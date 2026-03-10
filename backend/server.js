@@ -252,7 +252,7 @@ app.get('/api/commitment/:address', async (req, res) => {
 
 // ── START ───────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`\n⚡ CIPHER SCORE Backend`);
+    console.log(`\n⚡ PROVA Backend`);
     console.log(`   Running on: http://localhost:${PORT}`);
     console.log(`   Network:    Starknet Sepolia`);
     console.log(`   Oracle:     ${process.env.ORACLE_CONTRACT_ADDRESS || 'NOT DEPLOYED YET'}`);

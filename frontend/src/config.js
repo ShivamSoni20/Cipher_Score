@@ -3,5 +3,6 @@ export const CONFIG = {
     ORACLE_ADDRESS: import.meta.env.VITE_ORACLE_ADDRESS || '0x066ef733b99884bf427fb810d720c6f2df9894ec4f31e6e17358751b83054e3a',
     NETWORK: 'sepolia',
     STARKSCAN_BASE: 'https://sepolia.starkscan.co',
-    INCOME_THRESHOLD_CENTS: 300000, // $3,000 threshold for demo
+    INCOME_THRESHOLD_CENTS: 300000,
+    DEMO_MODE: import.meta.env.VITE_DEMO_MODE === 'true',
 };

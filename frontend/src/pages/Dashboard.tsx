@@ -7,8 +7,8 @@ import { useAccount, useSendTransaction } from "@starknet-react/core";
 import { CONFIG } from "../config";
 import { toast } from "sonner";
 
-const COMMITMENT = "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b";
-const NULLIFIER = "0x9f8e7d6c5b4a3928170615043322110e0f0e0d0c";
+const MOCK_COMMITMENT = "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b";
+const MOCK_NULLIFIER = "0x9f8e7d6c5b4a3928170615043322110e0f0e0d0c";
 
 const ABI = [
   {
@@ -42,6 +42,8 @@ const Dashboard = () => {
   const [showSnippet, setShowSnippet] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [scanData, setScanData] = useState<any>(null);
+  const [isScanning, setIsScanning] = useState(false);
   const { address, status } = useAccount();
 
   const { sendAsync, isPending } = useSendTransaction({
@@ -49,7 +51,7 @@ const Dashboard = () => {
       {
         contractAddress: CONFIG.ORACLE_ADDRESS,
         entrypoint: "register_commitment",
-        calldata: [COMMITMENT, NULLIFIER, true],
+        calldata: [MOCK_COMMITMENT, MOCK_NULLIFIER, true],
       },
     ],
   });
@@ -80,21 +82,45 @@ const Dashboard = () => {
     }
   }, [status, currentStep]);
 
-  // Scan progress
+  // Phase 1: Scan History (triggered after connection)
   useEffect(() => {
-    if (currentStep !== 1) return;
+    if (status === "connected" && currentStep === 1 && !isScanning) {
+      handleScan();
+    }
+  }, [status, currentStep]);
+
+  const handleScan = async () => {
+    if (!address) return;
+    setIsScanning(true);
+    setScanProgress(0);
+
     const interval = setInterval(() => {
-      setScanProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => setCurrentStep(2), 500);
-          return 100;
-        }
-        return prev + 2;
+      setScanProgress(prev => Math.min(prev + 5, 95));
+    }, 100);
+
+    try {
+      const response = await fetch(`${CONFIG.BACKEND_URL}/api/wallet/scan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address })
       });
-    }, 60);
-    return () => clearInterval(interval);
-  }, [currentStep]);
+      const data = await response.json();
+
+      clearInterval(interval);
+      setScanProgress(100);
+      setScanData(data);
+
+      setTimeout(() => {
+        setCurrentStep(2);
+        setIsScanning(false);
+      }, 800);
+    } catch (err) {
+      console.error("Scan error:", err);
+      clearInterval(interval);
+      setScanProgress(100);
+      setTimeout(() => setCurrentStep(2), 800);
+    }
+  };
 
   // Terminal lines for proof generation
   useEffect(() => {
@@ -147,7 +173,7 @@ const Dashboard = () => {
         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:sticky top-14 left-0 z-30 w-60 h-[calc(100vh-56px)] bg-zk-surface border-r border-zk-border flex flex-col transition-transform duration-200`}>
           <div className="p-4">
             <Link to="/" className="font-mono text-sm text-zk-green flex items-center">
-              <span className="text-zk-text-secondary">&gt; </span>cipher_score
+              <span className="text-zk-text-secondary">&gt; </span>prova
               <span className="animate-blink text-zk-green ml-0.5">_</span>
             </Link>
           </div>
@@ -184,7 +210,7 @@ const Dashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
               <div>
-                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate CIPHER SCORE</h1>
+                <h1 className="font-mono text-xl font-bold text-zk-text-primary">Generate PROVA Proof</h1>
                 <p className="font-body text-sm text-zk-text-secondary mt-1">Prove your creditworthiness without revealing any data</p>
               </div>
               <span className="font-mono text-xs text-zk-text-secondary flex items-center gap-1.5 mt-2 md:mt-0">
@@ -302,26 +328,28 @@ const Dashboard = () => {
                 {currentStep === 3 && (
                   <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="text-center">
                     <p className="font-mono text-3xl font-bold text-zk-green mb-2">✓ INCOME VERIFIED</p>
-                    <p className="font-mono text-sm text-zk-text-secondary mb-6">Threshold: $3,000 / 90 days — MET</p>
+                    <p className="font-mono text-sm text-zk-text-secondary mb-6">
+                      Threshold: $3,000 / 90 days —
+                      <span className="text-zk-green font-bold ml-2">MET</span>
+                    </p>
 
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="text-center">
-                        <p className="font-mono text-xs text-zk-text-secondary">Generated in</p>
-                        <p className="font-mono text-sm text-zk-text-primary">1.8s</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-mono text-xs text-zk-text-secondary">Expires</p>
-                        <p className="font-mono text-sm text-zk-text-primary">30 days</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-mono text-xs text-zk-text-secondary">Network</p>
-                        <p className="font-mono text-sm text-zk-text-primary">Sepolia</p>
+                    <div className="bg-zk-card border border-zk-border rounded-[4px] p-4 mb-6 text-left">
+                      <p className="font-mono text-[10px] text-zk-text-secondary uppercase mb-2">Scan Result Summary</p>
+                      <div className="grid grid-cols-2 gap-y-2">
+                        <span className="font-mono text-xs text-zk-text-secondary text-left">Income Profile:</span>
+                        <span className="font-mono text-xs text-zk-text-primary text-right">{scanData?.income_range_display || "$3,000 – $5,000 / 90 days"}</span>
+
+                        <span className="font-mono text-xs text-zk-text-secondary text-left">Wallet Age:</span>
+                        <span className="font-mono text-xs text-zk-text-primary text-right">{scanData?.wallet_age_days || "Unknown"} days</span>
+
+                        <span className="font-mono text-xs text-zk-text-secondary text-left">Privacy Guard:</span>
+                        <span className="font-mono text-xs text-zk-green text-right">ENABLED ✓</span>
                       </div>
                     </div>
 
                     <div className="text-left space-y-3 mb-6">
-                      <CopyField label="Commitment" value={COMMITMENT} field="commitment" copiedField={copiedField} onCopy={copyToClipboard} />
-                      <CopyField label="Nullifier" value={NULLIFIER} field="nullifier" copiedField={copiedField} onCopy={copyToClipboard} />
+                      <CopyField label="Commitment" value={MOCK_COMMITMENT} field="commitment" copiedField={copiedField} onCopy={copyToClipboard} />
+                      <CopyField label="Nullifier" value={MOCK_NULLIFIER} field="nullifier" copiedField={copiedField} onCopy={copyToClipboard} />
                     </div>
 
                     <div className="flex gap-3">
@@ -336,7 +364,7 @@ const Dashboard = () => {
                         {isPending ? "Submitting..." : "Register On-Chain"}
                       </button>
                       <button
-                        onClick={() => copyToClipboard(COMMITMENT, "commit-btn")}
+                        onClick={() => copyToClipboard(MOCK_COMMITMENT, "commit-btn")}
                         className="flex-1 font-mono text-sm text-zk-text-primary border border-zk-border-bright py-2.5 rounded-[4px] hover:border-zk-green hover:text-zk-green transition-all duration-200"
                       >
                         {copiedField === "commit-btn" ? "Copied!" : "Copy Commitment"}
@@ -349,7 +377,7 @@ const Dashboard = () => {
                 {currentStep === 0 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
                     {status === "connected" ? (
-                      <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Initializing CIPHER SCORE session...</p>
+                      <p className="font-mono text-sm text-zk-text-secondary animate-pulse">Initializing PROVA session...</p>
                     ) : (
                       <div className="space-y-4">
                         <p className="font-mono text-sm text-zk-text-secondary">Please connect your Starknet wallet to continue</p>

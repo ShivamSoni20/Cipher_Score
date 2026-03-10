@@ -61,6 +61,10 @@ cd frontend && npm run dev
 *   **Multi-Protocol Verifications:** Allowing different DeFi protocols to query the same oracle.
 *   **Advanced ZK Models:** Privacy-preserving credit scoring based on multiple data sources.
 
+# PROVA (ZK Income Oracle)
+> **"Prove income. Get approved. Nothing revealed."**
+
+PROVA is a privacy-preserving creditworthiness infrastructure built for the **Starknet Re{define} Hackathon 2026 (Privacy Track)**.
 🔗 **Live Links**
 *   **Frontend URL:** [Live Dashboard](#)
 *   **GitHub:** [ShivamSoni20/zk-credit-bridge](https://github.com/ShivamSoni20/zk-credit-bridge)
