@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <Link to="/" className="font-mono text-sm text-zk-green flex items-center">
           <span className="text-zk-text-secondary">&gt; </span>
-          zk_income_oracle
+          cipher_score
         </Link>
 
         <p className="font-mono text-xs text-zk-text-secondary text-center">
@@ -14,9 +14,9 @@ const Footer = () => {
         </p>
 
         <div className="flex items-center gap-4">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">GitHub</a>
-          <a href="#" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">Starkscan</a>
-          <a href="#" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">Docs</a>
+          <a href="https://github.com/ShivamSoni20/zk-credit-bridge" target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">GitHub</a>
+          <a href="https://sepolia.starkscan.co/contract/0x066ef733b99884bf427fb810d720c6f2df9894ec4f31e6e17358751b83054e3a" target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">Starkscan</a>
+          <a href="#docs" className="font-mono text-xs text-zk-text-secondary hover:text-zk-text-primary transition-colors duration-150">Docs</a>
         </div>
       </div>
 

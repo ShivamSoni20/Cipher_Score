@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const LiveDemo = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -51,9 +52,12 @@ const LiveDemo = () => {
               <span className="font-mono text-xs text-zk-text-secondary">Income (90 days)</span>
               <p className="font-mono text-sm text-zk-text-primary">~$3,200 – $4,800</p>
             </div>
-            <button className="font-mono text-xs font-semibold bg-zk-green text-zk-base px-4 py-2 rounded-[4px] hover:brightness-110 transition-all duration-200 glow-green active:scale-[0.98] w-full mt-2">
+            <Link
+              to="/dashboard"
+              className="font-mono text-xs font-semibold bg-zk-green text-zk-base px-4 py-2 rounded-[4px] hover:brightness-110 transition-all duration-200 glow-green active:scale-[0.98] w-full mt-2 inline-block text-center"
+            >
               Generate Proof
-            </button>
+            </Link>
             <div className="flex items-center gap-2 mt-3">
               <span className="w-2 h-2 rounded-full bg-zk-green animate-pulse-dot" />
               <span className="font-mono text-sm text-zk-green animate-success-pulse">VERIFIED ✅</span>

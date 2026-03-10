@@ -3,10 +3,26 @@ import { Link } from "react-router-dom";
 import { Zap, FileText, Code, ExternalLink, Lock, Check, Copy, ChevronDown, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
-import { useAccount } from "@starknet-react/core";
+import { useAccount, useSendTransaction } from "@starknet-react/core";
+import { CONFIG } from "../config";
+import { toast } from "sonner";
 
 const COMMITMENT = "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b";
 const NULLIFIER = "0x9f8e7d6c5b4a3928170615043322110e0f0e0d0c";
+
+const ABI = [
+  {
+    type: "function",
+    name: "register_commitment",
+    inputs: [
+      { name: "commitment", type: "core::felt252" },
+      { name: "nullifier", type: "core::felt252" },
+      { name: "proof_valid", type: "core::bool" },
+    ],
+    outputs: [],
+    state_mutability: "external",
+  },
+];
 
 const sidebarItems = [
   { icon: Zap, label: "Generate Proof", active: true },
@@ -27,6 +43,34 @@ const Dashboard = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { address, status } = useAccount();
+
+  const { sendAsync, isPending } = useSendTransaction({
+    calls: [
+      {
+        contractAddress: CONFIG.ORACLE_ADDRESS,
+        entrypoint: "register_commitment",
+        calldata: [COMMITMENT, NULLIFIER, true],
+      },
+    ],
+  });
+
+  const handleRegisterOnChain = async () => {
+    console.log("Register Button Clicked. Status:", status);
+    if (status !== "connected") {
+      toast.error("Please connect your wallet first");
+      return;
+    }
+
+    try {
+      console.log("Submitting transaction to:", CONFIG.ORACLE_ADDRESS);
+      const result = await sendAsync();
+      toast.success("Transaction submitted!");
+      console.log("Transaction result:", result);
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      toast.error(err.message || "Failed to register on-chain");
+    }
+  };
 
   // Auto-progress through steps ONLY if connected
   useEffect(() => {
@@ -102,10 +146,10 @@ const Dashboard = () => {
         {/* Sidebar */}
         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:sticky top-14 left-0 z-30 w-60 h-[calc(100vh-56px)] bg-zk-surface border-r border-zk-border flex flex-col transition-transform duration-200`}>
           <div className="p-4">
-            <span className="font-mono text-sm text-zk-green flex items-center">
+            <Link to="/" className="font-mono text-sm text-zk-green flex items-center">
               <span className="text-zk-text-secondary">&gt; </span>cipher_score
               <span className="animate-blink text-zk-green ml-0.5">_</span>
-            </span>
+            </Link>
           </div>
 
           <nav className="flex-1 px-2 space-y-1">
@@ -281,8 +325,15 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex gap-3">
-                      <button className="flex-1 font-mono text-sm font-semibold bg-zk-green text-zk-base py-2.5 rounded-[4px] hover:brightness-110 transition-all duration-200 glow-green active:scale-[0.98]">
-                        Register On-Chain
+                      <button
+                        onClick={handleRegisterOnChain}
+                        disabled={isPending || status !== "connected"}
+                        className={`flex-1 font-mono text-sm font-semibold py-2.5 rounded-[4px] transition-all duration-200 active:scale-[0.98] ${isPending
+                          ? "bg-zk-border text-zk-text-secondary cursor-not-allowed"
+                          : "bg-zk-green text-zk-base hover:brightness-110 glow-green"
+                          }`}
+                      >
+                        {isPending ? "Submitting..." : "Register On-Chain"}
                       </button>
                       <button
                         onClick={() => copyToClipboard(COMMITMENT, "commit-btn")}

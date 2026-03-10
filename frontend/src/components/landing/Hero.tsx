@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { CONFIG } from "../../config";
 
 const codeLines = [
   { text: '// Starknet Sepolia — Live', color: 'text-zk-text-secondary', size: 'text-sm md:text-base' },
@@ -108,7 +109,9 @@ const Hero = () => {
             → Generate Your Proof
           </Link>
           <a
-            href="#"
+            href={`${CONFIG.STARKSCAN_BASE}/contract/${CONFIG.ORACLE_ADDRESS}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="font-mono text-sm text-zk-text-secondary border border-zk-border-bright px-5 py-2.5 rounded-[4px] hover:border-zk-green hover:text-zk-text-primary transition-all duration-200 inline-flex items-center gap-2 justify-center"
           >
             View on Starkscan ↗
