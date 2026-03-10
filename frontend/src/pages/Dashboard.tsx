@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { Zap, FileText, Code, ExternalLink, Lock, Check, Copy, ChevronDown, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import { useAccount } from "@starknet-react/core";
 
-const WALLET = "0x742d35Cc6634C0532925a3b8D4C9E8f3a2b1d4e7";
 const COMMITMENT = "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b";
 const NULLIFIER = "0x9f8e7d6c5b4a3928170615043322110e0f0e0d0c";
 
@@ -26,12 +26,15 @@ const Dashboard = () => {
   const [showSnippet, setShowSnippet] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { address, status } = useAccount();
 
-  // Auto-progress through steps
+  // Auto-progress through steps ONLY if connected
   useEffect(() => {
-    const timer1 = setTimeout(() => setCurrentStep(1), 1000);
-    return () => clearTimeout(timer1);
-  }, []);
+    if (status === "connected" && currentStep === 0) {
+      const timer1 = setTimeout(() => setCurrentStep(1), 1000);
+      return () => clearTimeout(timer1);
+    }
+  }, [status, currentStep]);
 
   // Scan progress
   useEffect(() => {
@@ -100,7 +103,7 @@ const Dashboard = () => {
         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:sticky top-14 left-0 z-30 w-60 h-[calc(100vh-56px)] bg-zk-surface border-r border-zk-border flex flex-col transition-transform duration-200`}>
           <div className="p-4">
             <span className="font-mono text-sm text-zk-green flex items-center">
-              <span className="text-zk-text-secondary">&gt; </span>zk_oracle
+              <span className="text-zk-text-secondary">&gt; </span>cipher_score
               <span className="animate-blink text-zk-green ml-0.5">_</span>
             </span>
           </div>
@@ -110,8 +113,8 @@ const Dashboard = () => {
               <button
                 key={i}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] font-mono text-sm transition-colors duration-150 ${item.active
-                    ? "text-zk-green border-l-2 border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]"
-                    : "text-zk-text-secondary hover:text-zk-text-primary hover:bg-[rgba(255,255,255,0.03)]"
+                  ? "text-zk-green border-l-2 border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]"
+                  : "text-zk-text-secondary hover:text-zk-text-primary hover:bg-[rgba(255,255,255,0.03)]"
                   }`}
               >
                 <item.icon size={16} />
@@ -125,7 +128,7 @@ const Dashboard = () => {
               <span className="w-2 h-2 rounded-full bg-zk-green animate-pulse-dot" />
               <div>
                 <p className="font-mono text-xs text-zk-green">Connected</p>
-                <p className="font-mono text-[10px] text-zk-text-secondary">{truncate(WALLET)}</p>
+                <p className="font-mono text-[10px] text-zk-text-secondary">{address ? truncate(address) : "..."}</p>
               </div>
             </div>
           </div>
@@ -152,10 +155,10 @@ const Dashboard = () => {
                 <div key={i} className="flex items-center">
                   <div className="flex flex-col items-center min-w-[80px]">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold border-2 transition-all duration-500 ${i < currentStep
-                        ? "bg-zk-green border-zk-green text-zk-base"
-                        : i === currentStep
-                          ? "border-zk-green text-zk-green animate-pulse"
-                          : "border-zk-border text-zk-text-secondary"
+                      ? "bg-zk-green border-zk-green text-zk-base"
+                      : i === currentStep
+                        ? "border-zk-green text-zk-green animate-pulse"
+                        : "border-zk-border text-zk-text-secondary"
                       }`}>
                       {i < currentStep ? "✓" : i + 1}
                     </div>
