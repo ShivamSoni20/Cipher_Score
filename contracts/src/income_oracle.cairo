@@ -1,152 +1,168 @@
+// ============================================================
+// CIPHER SCORE — ZK Income Oracle
+// Privacy-preserving creditworthiness for Starknet DeFi
+// "Prove income. Get approved. Nothing revealed."
+// Starknet Re{define} Hackathon 2026 — Privacy Track
+// ============================================================
+
 use starknet::ContractAddress;
 
 #[starknet::interface]
 pub trait IIncomeOracle<TContractState> {
-    // Called by borrower: registers their ZK income commitment on-chain
     fn register_commitment(
         ref self: TContractState,
-        commitment: felt252,
-        nullifier: felt252,
-        proof_valid: bool
+        commitment:  felt252,
+        nullifier:   felt252,
+        proof_valid: bool,
+        qualifies:   bool
     );
 
-    // Called by lending protocol: queries if address meets income threshold
-    // Returns true/false — no raw data ever
     fn verify_income(
         ref self: TContractState,
         user_address: ContractAddress,
-        threshold: u64,
-        commitment: felt252,
-        nullifier: felt252,
-        qualifies: bool
+        threshold:    u64,
+        commitment:   felt252,
+        nullifier:    felt252
     ) -> bool;
 
-    // Read functions
-    fn get_commitment(self: @TContractState, address: ContractAddress) -> felt252;
-    fn is_nullifier_used(self: @TContractState, nullifier: felt252) -> bool;
-    fn get_commit_timestamp(self: @TContractState, commitment: felt252) -> u64;
+    fn get_commitment(
+        self: @TContractState,
+        address: ContractAddress
+    ) -> felt252;
+    
+    fn is_nullifier_used(
+        self: @TContractState,
+        nullifier: felt252
+    ) -> bool;
+    
+    fn get_commit_timestamp(
+        self: @TContractState,
+        commitment: felt252
+    ) -> u64;
+    
     fn get_total_proofs(self: @TContractState) -> u64;
+    fn get_total_verifications(self: @TContractState) -> u64;
+    fn get_income_qualifies(
+        self: @TContractState,
+        address: ContractAddress
+    ) -> bool;
 }
 
 #[starknet::contract]
 mod IncomeOracle {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
     use starknet::storage::{
-        StoragePointerReadAccess, StoragePointerWriteAccess, StorageMapReadAccess, StorageMapWriteAccess, Map
+        StoragePointerReadAccess, StoragePointerWriteAccess,
+        StorageMapReadAccess, StorageMapWriteAccess, Map
     };
 
-    // ── STORAGE ──────────────────────────────────────────────────────────────
     #[storage]
     struct Storage {
-        // address → their latest commitment hash
-        commitments: Map<ContractAddress, felt252>,
-        // commitment → when it was registered (for 30-day expiry)
-        commit_timestamps: Map<felt252, u64>,
-        // nullifier → bool (prevents proof replay across protocols)
-        used_nullifiers: Map<felt252, bool>,
-        // stats
+        commitments:             Map<ContractAddress, felt252>,
+        commit_timestamps:       Map<felt252, u64>,
+        used_nullifiers:         Map<felt252, bool>,
+        income_qualifies:        Map<ContractAddress, bool>,
         total_proofs_registered: u64,
-        total_verifications: u64,
+        total_verifications:     u64,
     }
 
-    // ── EVENTS ───────────────────────────────────────────────────────────────
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         CommitmentRegistered: CommitmentRegistered,
-        IncomeVerified: IncomeVerified,
+        IncomeVerified:       IncomeVerified,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct CommitmentRegistered {
         #[key]
-        pub user: ContractAddress,
+        pub user:       ContractAddress,
         pub commitment: felt252,
-        pub timestamp: u64,
+        pub timestamp:  u64,
+        pub qualifies:  bool,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct IncomeVerified {
         #[key]
-        pub protocol: ContractAddress,
+        pub protocol:  ContractAddress,
         #[key]
-        pub user: ContractAddress,
-        pub result: bool,
+        pub user:      ContractAddress,
+        pub result:    bool,
         pub threshold: u64,
         pub nullifier: felt252,
     }
 
-    // ── CONSTRUCTOR ──────────────────────────────────────────────────────────
     #[constructor]
     fn constructor(ref self: ContractState) {
-        self.total_proofs_registered.write(0);
-        self.total_verifications.write(0);
+        self.total_proofs_registered.write(0_u64);
+        self.total_verifications.write(0_u64);
     }
 
-    // ── IMPLEMENTATION ───────────────────────────────────────────────────────
     #[abi(embed_v0)]
     impl IncomeOracleImpl of super::IIncomeOracle<ContractState> {
 
         fn register_commitment(
             ref self: ContractState,
-            commitment: felt252,
-            nullifier: felt252,
-            proof_valid: bool
+            commitment:  felt252,
+            nullifier:   felt252,
+            proof_valid: bool,
+            qualifies:   bool
         ) {
-            // In MVP: proof_valid is passed by frontend after client-side verify
-            // Production: call income_verifier::verify() directly here
-            assert(proof_valid, 'Invalid ZK proof');
-            assert(commitment != 0, 'Empty commitment');
+            assert!(proof_valid, "Invalid ZK proof");
+            assert!(commitment != 0, "Empty commitment");
 
-            let caller = get_caller_address();
+            let caller    = get_caller_address();
             let timestamp = get_block_timestamp();
 
-            // Store commitment for this address
             self.commitments.write(caller, commitment);
             self.commit_timestamps.write(commitment, timestamp);
+            self.income_qualifies.write(caller, qualifies);
 
-            // Increment counter
             let count = self.total_proofs_registered.read();
-            self.total_proofs_registered.write(count + 1);
+            self.total_proofs_registered.write(count + 1_u64);
 
-            // Emit event (visible on Starkscan — key demo moment)
             self.emit(CommitmentRegistered {
                 user: caller,
                 commitment,
                 timestamp,
+                qualifies,
             });
         }
 
         fn verify_income(
             ref self: ContractState,
             user_address: ContractAddress,
-            threshold: u64,
-            commitment: felt252,
-            nullifier: felt252,
-            qualifies: bool
+            threshold:    u64,
+            commitment:   felt252,
+            nullifier:    felt252
         ) -> bool {
-            // 1. Nullifier must not be used (prevents replay attacks)
-            assert(!self.used_nullifiers.read(nullifier), 'Nullifier already used');
+            assert!(
+                !self.used_nullifiers.read(nullifier),
+                "Nullifier already used"
+            );
 
-            // 2. Commitment must match what user registered
             let stored_commitment = self.commitments.read(user_address);
-            assert(stored_commitment == commitment, 'Commitment mismatch');
-            assert(stored_commitment != 0, 'No commitment registered');
+            assert!(stored_commitment != 0, "No commitment registered");
+            assert!(stored_commitment == commitment, "Commitment mismatch");
 
-            // 3. Commitment must be fresh (30 days = 2,592,000 seconds)
             let registered_at = self.commit_timestamps.read(commitment);
-            let now = get_block_timestamp();
-            assert(now - registered_at < 2592000, 'Commitment expired');
+            let now           = get_block_timestamp();
+            assert!(registered_at != 0_u64, "Commitment timestamp missing");
+            assert!(now >= registered_at,   "Invalid block timestamp");
+            assert!(
+                now - registered_at < 2592000_u64,
+                "Commitment expired"
+            );
 
-            // 4. Mark nullifier used (one query per protocol)
             self.used_nullifiers.write(nullifier, true);
 
-            // 5. Update stats
-            let verif_count = self.total_verifications.read();
-            self.total_verifications.write(verif_count + 1);
+            let count = self.total_verifications.read();
+            self.total_verifications.write(count + 1_u64);
 
-            // 6. Emit event (protocol address = caller)
-            let protocol = get_caller_address();
+            let qualifies = self.income_qualifies.read(user_address);
+            let protocol  = get_caller_address();
+
             self.emit(IncomeVerified {
                 protocol,
                 user: user_address,
@@ -181,6 +197,17 @@ mod IncomeOracle {
 
         fn get_total_proofs(self: @ContractState) -> u64 {
             self.total_proofs_registered.read()
+        }
+
+        fn get_total_verifications(self: @ContractState) -> u64 {
+            self.total_verifications.read()
+        }
+
+        fn get_income_qualifies(
+            self: @ContractState,
+            address: ContractAddress
+        ) -> bool {
+            self.income_qualifies.read(address)
         }
     }
 }

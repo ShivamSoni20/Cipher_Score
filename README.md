@@ -9,7 +9,7 @@
 *   **On-Chain Verifier** 🎬 - Cairo-based Starknet contract
 *   **Privacy Guard** ⚡ - Identity-preserving commitments
 
-📢 **Follow our progress:** [Live Dashboard](https://sepolia.starkscan.co/contract/0x066ef733b99884bf427fb810d720c6f2df9894ec4f31e6e17358751b83054e3a)
+📢 **Follow our progress:** [Live Dashboard](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4)
 
 **CIPHER SCORE** is a revolutionary platform where users can verify their financial status autonomously using Zero-Knowledge proofs—all secured by Starknet smart contracts. The system is designed for 100% Privacy, allowing lending protocols to assess risk without ever seeing raw bank data.
 
@@ -61,14 +61,14 @@ cd frontend && npm run dev
 *   **Multi-Protocol Verifications:** Allowing different DeFi protocols to query the same oracle.
 *   **Advanced ZK Models:** Privacy-preserving credit scoring based on multiple data sources.
 
-# PROVA (ZK Income Oracle)
+# CIPHER SCORE (ZK Income Oracle)
 > **"Prove income. Get approved. Nothing revealed."**
 
-PROVA is a privacy-preserving creditworthiness infrastructure built for the **Starknet Re{define} Hackathon 2026 (Privacy Track)**.
+CIPHER SCORE is a privacy-preserving creditworthiness infrastructure built for the **Starknet Re{define} Hackathon 2026 (Privacy Track)**.
 🔗 **Live Links**
 *   **Frontend URL:** [Live Dashboard](#)
 *   **GitHub:** [ShivamSoni20/zk-credit-bridge](https://github.com/ShivamSoni20/zk-credit-bridge)
-*   **Starknet Explorer:** [Contract Package](https://sepolia.starkscan.co/contract/0x066ef733b99884bf427fb810d720c6f2df9894ec4f31e6e17358751b83054e3a)
+*   **Starknet Explorer:** [Contract Package](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4)
 
 📄 **License**
 MIT License - see LICENSE for details.
