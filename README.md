@@ -20,6 +20,13 @@ Built for the **Starknet Re{define} Hackathon (Privacy Track)**.
 
 ---
 
+## 🔗 Live Deployments
+
+**Starknet Sepolia Testnet**
+- **Income Oracle Contract:** [`0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4`](https://sepolia.voyager.online/contract/0x0479194feae060df3c06344514911af4f10d56ca3651ec1efb27171a1dfa86d4)
+
+---
+
 ## 🎯 The Problem
 In the current DeFi and traditional finance landscapes, credit scoring requires users to leak highly sensitive financial data (addresses, full transaction histories, account balances) to centralized or prying entities. This creates massive privacy risks, honey-pots for hackers, and limits the ultimate scale of trustless lending.
 
